@@ -7,10 +7,21 @@ function listAll(){
 }
 
 function listOne(id){
-    return db.listOne(entidad, id);
+    return db.listOne(id);
+}
+
+function login(usu, con){
+    return db.loginValidator(entidad, usu, con);
+}
+
+function register(Nombre, Apellido, Correo, Contrasena, ConfirmarCont){
+    console.log(Nombre, Apellido, Correo, Contrasena, ConfirmarCont)
+    return db.add(entidad, Nombre, Apellido, Correo, Contrasena, ConfirmarCont);
 }
 
 module.exports = {
     listAll,
-    listOne
+    listOne,
+    login,
+    register
 }

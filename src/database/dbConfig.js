@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const config = require('../config');
+const { query } = require('express');
 
 const dbParameters = {
     host: config.mysql.host,
@@ -42,9 +43,9 @@ function listAll(entidad){
     });
 }
 
-function listOne(entidad, id){
+function listOne(id){
     return new Promise((resolve, reject) => {
-        connection.query(`SELECT * FROM ${entidad} WHERE id = ${id}`, (error, result) => {
+        connection.query('SELECT * FROM persona WHERE id = ?', [id], (error, result) => {
             if(error){
                 return reject(error);
             }
@@ -53,7 +54,31 @@ function listOne(entidad, id){
     });
 }
 
+function loginValidator(entidad, usu, cont){
+    return new Promise((resolve,reject)=> {
+        connection.query(`SELECT * FROM ${entidad} WHERE correo_electronico = '${usu}' AND clave = '${cont}';`,(error,result)=>{
+            if(error)
+                return reject(error);
+
+            return resolve(result);
+        })
+    });
+}
+
+function add(entidad, Nombre, Apellido, Correo, Contrasena, ConfirmarCont){
+    return new Promise((resolve,reject) => {
+        connection.query(`INSERT INTO ${entidad} (nombre, apellido, correo_electronico, clave, numero_documento) VALUES ('${Nombre}', '${Apellido}', '${Correo}', '${Contrasena}', '${ConfirmarCont}');`,(error, result) =>{
+            if (error)
+                return reject(error);
+            return resolve(result);        
+        })
+        console.log(`INSERT INTO ${entidad} (nombre, apellido, correo_electronico, clave, numero_documento) VALUES ('${Nombre}', '${Apellido}', '${Correo}', '${Contrasena}', '${ConfirmarCont}');`)
+    })
+}
+
 module.exports = {
     listAll,
-    listOne
+    listOne,
+    loginValidator,
+    add
 }
